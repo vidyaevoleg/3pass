@@ -8,7 +8,7 @@ import {useStore} from 'Store';
 interface IProps {
   onSuccess: () => void;
 }
-export const FastLogin: FC<IProps> = ({ onSuccess }) => {
+export const Unlock: FC<IProps> = ({ onSuccess }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const theme = useTheme();

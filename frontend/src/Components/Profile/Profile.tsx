@@ -3,6 +3,7 @@ import {Divider, IconButton, Menu, MenuItem} from '@mui/material';
 import {AccountCircle} from '@mui/icons-material';
 import {useStore} from 'Store';
 import Tooltip from '@mui/material/Tooltip';
+import {Link} from 'Components/UI/Link';
 
 export const Profile: FC = () => {
   const { userStore } = useStore();
@@ -44,7 +45,11 @@ export const Profile: FC = () => {
         open={Boolean(anchorEl)}
         onClose={closeHandler}
       >
-        <MenuItem>Settings</MenuItem>
+        <MenuItem>
+          <Link to={'/settings'}>
+            Settings
+          </Link>
+        </MenuItem>
         <Divider/>
         <MenuItem onClick={lockHandler}>Lock</MenuItem>
         <Divider/>

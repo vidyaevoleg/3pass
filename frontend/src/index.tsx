@@ -1,11 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import { App } from 'Components/App';
+import { App } from './App';
 import reportWebVitals from './reportWebVitals';
 
 import * as buffer from 'buffer';
-
 
 // HOTFIXES
 // https://stackoverflow.com/questions/70296914/near-protocol-referenceerror-buffer-is-not-defined

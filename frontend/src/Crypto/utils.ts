@@ -285,11 +285,11 @@ export class Utils {
   // }
 
   static isNullOrWhitespace(str: string): boolean {
-    return str === null || typeof str !== "string" || str.trim() === "";
+    return str == null || typeof str !== "string" || str.trim() === "";
   }
 
   static isNullOrEmpty(str: string): boolean {
-    return str === null || typeof str !== "string" || str === "";
+    return str == null || typeof str !== "string" || str === "";
   }
 
   static nameOf<T>(name: string & keyof T) {
@@ -499,14 +499,14 @@ export class Utils {
       p.macKey = key.meta.macKeyByteString;
     }
 
-    if (p.encKey === null) {
+    if (p.encKey == null) {
       p.encKey = forge.util.decode64(key.encKeyB64);
     }
     p.data = forge.util.decode64(data);
     p.iv = forge.util.decode64(iv);
     // @ts-ignore
     p.macData = p.iv + p.data;
-    if (p.macKey === null && key.macKeyB64 != null) {
+    if (p.macKey == null && key.macKeyB64 != null) {
       p.macKey = forge.util.decode64(key.macKeyB64);
     }
     if (mac != null) {
@@ -514,13 +514,13 @@ export class Utils {
     }
 
     // cache byte string keys for later
-    if (key.meta === null) {
+    if (key.meta == null) {
       key.meta = {};
     }
-    if (key.meta.encKeyByteString === null) {
+    if (key.meta.encKeyByteString == null) {
       key.meta.encKeyByteString = p.encKey;
     }
-    if (p.macKey != null && key.meta.macKeyByteString === null) {
+    if (p.macKey != null && key.meta.macKeyByteString == null) {
       key.meta.macKeyByteString = p.macKey;
     }
 
