@@ -4,10 +4,13 @@ import {ThemeProvider} from '@mui/material';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {Application, Landing, Settings} from 'Pages';
 import {AppProvider, WithApp} from 'Components/AppProvider/AppProvider';
+import {ThemeOptions} from 'theme';
 
-const theme = createTheme();
+const theme = createTheme(ThemeOptions);
 
 export const App: FC = () => {
+  const st = theme;
+
   return (
     <AppProvider>
       <ThemeProvider theme={theme}>

@@ -37,7 +37,9 @@ export const ItemsList: FC = observer(() => {
                 primary={
                   <Truncated title={item.url} size={12}/>
                 }
-                secondary={item.username}
+                secondary={
+                  <Truncated title={item.username} size={15}/>
+                }
               />
             </MenuItem>
           )

@@ -47,7 +47,7 @@ export const ItemForm: FC<IProps> = ({ item }) => {
     <FormikForm onSubmit={saveHandler} initialValues={formValues}>
       <FormikTextInput label={'URL'} name={'url'}/>
       <FormikTextInput label={'Email (or username)'} name={'username'}/>
-      <FormikTextInput label={'Password'} type={'password'}  name={'password'}/>
+      <FormikTextInput label={'Password'} name={'password'}/>
       <FormikSubmit>
         Save
       </FormikSubmit>
