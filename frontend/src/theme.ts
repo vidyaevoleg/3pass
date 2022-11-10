@@ -1,4 +1,4 @@
-const colors = {
+export const colors = {
   blue1: '#83c5fa',
   blue2: '#491bb3',
   blue3: '#0c82d9',
@@ -6,12 +6,15 @@ const colors = {
   blue5: '#61a4d3',
   white: '#fff',
   gray1: '#adabab',
+  gray2: '#EDEFF2', // borders
+  gray3: '#ABB3C1', // grid icon
+  gray4: '#76839E', // expand more icon
   black: 'rgba(0, 0, 0, 0.87)'
 }
 
 const textPalette = {
   primary: colors.black,
-  secondary: colors.gray1,
+  secondary: colors.gray2,
   link: colors.blue4,
   linkHover: colors.blue3
 };
@@ -65,12 +68,23 @@ export const ThemeOptions = {
       fontSize: '1.4rem'
     }
   },
+
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1440, // now this value
+      xl: 1600,
+    },
+  },
+
   palette,
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: 'none' as const
+          textTransform: 'none' as const,
         },
         contained: {
           textTransform: 'uppercase' as const,
