@@ -10,7 +10,7 @@ interface IProps {
 
 export const Layout: FC<IProps> = observer(({ children}) => {
   return (
-    <Container component="main" maxWidth="sm">
+    <Container component='main' maxWidth='xl'>
       <Header/>
       <Box mt={1}>
         { children }
