@@ -5,19 +5,19 @@ import {ContractService} from 'Services/ContractService';
 import {createStore, RootStoreInstance} from 'Store';
 
 export interface IApp {
+  store: RootStoreInstance,
   accountId?: string
   cryptoService: CryptoService,
   keysService: KeysService,
   contractService: ContractService,
   encrypt: (value: object) => Promise<string>,
   decrypt: <T>(value: string) => Promise<T>,
-  store: RootStoreInstance,
-  afterSignUp: (cryptoKey: SymmetricCryptoKey, keyHashValue: string, encryptedCryptoKey: string) => void;
+  afterSignUp: (cryptoKey: SymmetricCryptoKey, keyHashValue: string, encryptedCryptoKey: string) => Promise<void>;
 }
 
 export class App implements IApp {
   public readonly accountId?: string
-  public cryptoService: CryptoService;
+  public readonly cryptoService: CryptoService;
   public keysService: KeysService
   public contractService: ContractService;
   public store: RootStoreInstance;
@@ -51,7 +51,12 @@ export class App implements IApp {
     return JSON.parse(decString) as T;
   }
 
-  afterSignUp(cryptoKey: SymmetricCryptoKey, keyHashValue: string, encryptedCryptoKey: string) {
+  async afterSignUp(cryptoKey: SymmetricCryptoKey, keyHashValue: string, encryptedCryptoKey: string): Promise<void> {
     this.keysService.setup(cryptoKey, keyHashValue, encryptedCryptoKey);
+    // here we close the current near connection with the deployer contract
+    await this.contractService.signOut();
+    // and create new near connection with the vault contract
+    // near can have only one active contract connection
+    await this.contractService.signInVault();
   }
 }

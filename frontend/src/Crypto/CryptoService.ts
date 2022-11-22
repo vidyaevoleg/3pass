@@ -101,7 +101,6 @@ export class CryptoService {
     let encKeyEnc;
 
     if (key.key.byteLength === 32) {
-      debugger
       const newKey = await this.stretchKey(key);
       encKeyEnc = await this.encrypt(encKey, newKey);
     } else if (key.key.byteLength === 64) {

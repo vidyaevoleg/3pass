@@ -16,7 +16,11 @@ export const Unlock: FC<IProps> = ({ onSuccess }) => {
 
   const submitHandler = useCallback(async () => {
     const result = await userStore.fastSignIn(password);
-    result ? onSuccess() : setError('Invalid password');
+    if (result) {
+      onSuccess();
+    } else {
+      setError('Invalid password')
+    }
   }, [password, userStore]);
 
   return (

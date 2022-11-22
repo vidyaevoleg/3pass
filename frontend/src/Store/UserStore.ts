@@ -4,6 +4,7 @@ import {HashPurpose} from 'Crypto';
 
 export const UserStore = types.model({
   accountId: types.maybeNull(types.string),
+  vaultAccountId: types.maybeNull(types.string),
   online: types.maybeNull(types.boolean),
   keyHash: types.maybeNull(types.string)
 })
@@ -40,16 +41,26 @@ export const UserStore = types.model({
       self.online = true;
     };
 
+    const setVaultContractId = (vaultContractId: string) => {
+      const app = App.instance;
+      self.vaultAccountId = vaultContractId;
+      app.contractService.setVaultContract(vaultContractId);
+    };
+
     return {
       lock,
       signOut,
       fastSignIn,
       signInSuccess,
       contractSignIn,
+      setVaultContractId,
     }
   })
   .views((self) => ({
-  get readyForFastSignIn () {
+  get IsReadyForFastSignIn () {
     return !!self.keyHash;
+  },
+  get IsReadyForRegister () {
+    return !!self.vaultAccountId;
   }
 }));

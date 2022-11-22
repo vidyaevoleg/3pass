@@ -1,14 +1,14 @@
 import {FC} from 'react';
 import {Layout} from 'Components/Layout';
-import {Auth} from 'Components/Auth';
 import {Application as ApplicationComponent} from 'Components/Application';
+import {AuthProvider} from 'Components/AuthProvider';
 
 export const Application: FC = () => {
   return (
     <Layout>
-      <Auth>
+      <AuthProvider>
         <ApplicationComponent/>
-      </Auth>
+      </AuthProvider>
     </Layout>
   )
 }
