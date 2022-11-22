@@ -19,7 +19,11 @@ export const AppProvider: FC<{ children: ReactNode }> = ({ children }) => {
     instance,
     initialize: async () => {
       setLoading(true);
-      const instance = await initNear().then(state => App.init(state));
+      const instance = await initNear()
+        .then(async state => {
+          const app = App.init(state);
+          return app;
+        });
       setLoading(false);
       setInstance(instance);
     },

@@ -1,14 +1,14 @@
 import {FC} from 'react';
 import {Layout} from 'Components/Layout';
-import {Auth} from 'Components/Auth';
 import {Settings as SettingsComponent} from 'Components/Settings';
+import {AuthProvider} from 'Components/AuthProvider';
 
 export const Settings: FC = () => {
   return (
     <Layout>
-      <Auth>
+      <AuthProvider>
         <SettingsComponent/>
-      </Auth>
+      </AuthProvider>
     </Layout>
   )
 }

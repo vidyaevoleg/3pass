@@ -1,17 +1,13 @@
-import Box from '@mui/material/Box';
-import { Button } from 'Components/UI/Button';
-import React, { FC, useState } from 'react';
-import {CryptoService, HashPurpose} from 'Crypto';
+import React, {FC, useState} from 'react';
 import {Card, CardActions, CardContent, Typography, useTheme} from '@mui/material';
 import {useStore} from 'Store';
-import {TextInput} from 'Components/UI/TextInput';
 import {App} from 'Services/AppService';
+import {HashPurpose} from 'Crypto';
+import Box from '@mui/material/Box';
+import {TextInput} from 'Components/UI/TextInput';
+import {Button} from 'Components/UI/Button';
 
-interface IProps {
-  onSuccess: () => void;
-}
-
-export const Register: FC<IProps> = ({ onSuccess }) => {
+export const MasterPassword: FC = () => {
   const [password, setPassword] = useState('');
   const theme = useTheme();
   const { userStore } = useStore();
@@ -23,7 +19,6 @@ export const Register: FC<IProps> = ({ onSuccess }) => {
     const keyHash = await cryptoService.hashPassword(password, cryptoKey,HashPurpose.LocalAuthorization);
 
     App.instance.afterSignUp(cryptoKey, keyHash, encryptedCryptoKey!)
-    onSuccess();
   };
 
   return <Box mt={2}>

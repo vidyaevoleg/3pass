@@ -4,16 +4,13 @@ use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{env, log, near_bindgen};
 use near_sdk::collections::{UnorderedMap};
 
-// Define the default message
-
-const VERSION: Version = [1, 0];
-
 type Version = [u8; 2];
+const VERSION: Version = [1, 0];
 
 // Define the contract structure
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize)]
-pub struct Contract {
+pub struct VaultContract {
     vault: Vault,
     version: Version,
 }
@@ -26,14 +23,13 @@ pub struct Vault {
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
 #[serde(crate = "near_sdk::serde")]
 pub struct VaultItem {
-    content: String,
-    created_at: u64,
-    updated_at: u64
+    pub content: String,
+    pub created_at: u64,
+    pub updated_at: u64
 }
 
-
 // Define the default, which automatically initializes the contract
-impl Default for Contract{
+impl Default for VaultContract{
     fn default() -> Self{
         let items: UnorderedMap<u16, VaultItem> = UnorderedMap::new(b"".to_vec());
         Self {
@@ -45,7 +41,7 @@ impl Default for Contract{
 
 // Implement the contract structure
 #[near_bindgen]
-impl Contract {
+impl VaultContract {
     pub fn add_item(&mut self, id: u16, hashed_content: String) {
         let timestamp = env::block_timestamp();
         assert!(self.vault.items.get(&id).is_none(), "KEY ALREADY EXISTS");
@@ -79,86 +75,4 @@ impl Contract {
         }
         return items;
     }
-}
-
-/*
- * The rest of this file holds the inline tests for the code above
- * Learn more about Rust tests: https://doc.rust-lang.org/book/ch11-01-writing-tests.html
- */
-#[cfg(test)]
-mod tests {
-    use near_sdk::serde_json::to_string;
-    use super::*;
-
-    #[test]
-    fn set_then_get_item() {
-        let mut contract = Contract::default();
-        let id = 0;
-        let content = "content";
-        contract.add_item(id,content.to_string());
-        assert_eq!(
-            contract.get_item(id).content,
-            content.to_string()
-        );
-    }
-
-    #[test]
-    fn set_then_update_item() {
-        let mut contract = Contract::default();
-        let id = 1;
-        let content = "content";
-        let new_content = "new_content";
-
-        contract.add_item(id, content.to_string());
-        contract.update_item(id, new_content.to_string());
-
-        assert_eq!(
-            contract.get_item(id).content,
-            new_content.to_string()
-        );
-    }
-
-    #[test]
-    fn get_all_vault_items() {
-        let mut contract = Contract::default();
-        let id = 0;
-        let content = "content";
-
-        contract.add_item(id, content.to_string());
-
-        let all = contract.get_all();
-
-        assert_eq!(all.len(), 1);
-        assert_eq!(all.get(&id).unwrap().content, content);
-    }
-
-    #[test]
-    fn delete_vault_items() {
-        let mut contract = Contract::default();
-        let id = 0;
-        let content = "content";
-        let all = contract.get_all();
-
-        assert_eq!(all.len(), 0);
-
-        contract.add_item(id, content.to_string());
-        let all = contract.get_all();
-        assert_eq!(all.len(), 1);
-        assert_eq!(all.get(&id).unwrap().content, content);
-
-        contract.delete_item(id);
-        let all = contract.get_all();
-        assert_eq!(all.len(), 0);
-    }
-
-    //
-    // #[test]
-    // fn set_then_get_number() {
-    //     let mut contract = Contract::default();
-    //     contract.set_number("123".to_string());
-    //     assert_eq!(
-    //         contract.get_number(),
-    //         123
-    //     );
-    // }
 }

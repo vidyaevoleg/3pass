@@ -6,15 +6,11 @@ export interface IVaultItemValue {
   updated: number
 }
 
-export interface IVaultItem extends IVaultItemValue {
-  id: string,
-}
-
 export interface IGetAllResponse {
   [key: number]: IVaultItemValue
 }
 
-export interface IContract extends NearContract {
+export interface IVaultContract extends NearContract {
   add_item: (args: any) => void;
   update_item: (args: any) => void;
   delete_item: (args: any) => void;
@@ -22,10 +18,15 @@ export interface IContract extends NearContract {
   get_all: () => Promise<IGetAllResponse>;
 }
 
+export interface IDeployerContract extends NearContract {
+  get_vault: (args: any) => Promise<string>;
+  delete_vault: () => Promise<void>;
+  deploy_vault: (args: any) => Promise<void>;
+}
+
 export interface INearState {
+  connection: Near,
+  walletConnection: WalletConnection,
   accountId?: string,
   account?: Account,
-  contract: IContract,
-  connection: Near,
-  walletConnection: WalletConnection
 }

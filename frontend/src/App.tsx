@@ -9,8 +9,6 @@ import {ThemeOptions} from 'theme';
 const theme = createTheme(ThemeOptions);
 
 export const App: FC = () => {
-  const st = theme;
-
   return (
     <AppProvider>
       <ThemeProvider theme={theme}>
