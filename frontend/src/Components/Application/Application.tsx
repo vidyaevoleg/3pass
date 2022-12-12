@@ -7,7 +7,10 @@ import {ItemAction, useStore} from 'Store';
 import {ItemsList} from 'Components/ItemsList';
 import {ItemForm} from 'Components/ItemForm/ItemForm';
 import {ItemViewer} from 'Components/ItemViewer';
-import {Paper} from '@mui/material';
+import {Paper, useTheme} from '@mui/material';
+import { HeaderBottomBar } from 'Components/Header/HeaderBottomBar';
+import {useStyles} from './styles';
+
 
 export const Application: FC = observer(() => {
   const { itemsStore } = useStore();
@@ -24,40 +27,48 @@ export const Application: FC = observer(() => {
     }
   }, []);
 
+  const theme = useTheme();
+  const styles = useStyles(theme);
+
   return (
-    <Grid container spacing={1}>
-      <Grid item xs={4}>
-        <ItemsList/>
-      </Grid>
-      <Grid item xs={8}>
-        <Paper>
-          <Box sx={{ p: 2 }}>
-            {
-              (itemsStore.action == ItemAction.Create && (
-                <ItemForm />
-              ))
-            }
-            {
-              (itemsStore.action == ItemAction.Update && (
-                <ItemForm item={ itemsStore.current! }/>
-              ))
-            }
-            {
-              itemsStore.action == ItemAction.View && (
-                <ItemViewer item={ itemsStore.current! }/>
-              )
-            }
-            {
-              !itemsStore.action && (
-                <Alert severity={'info'}>
-                  No item selected
-                </Alert>
-              )
-            }
+    <>
+      <HeaderBottomBar />
+      <Grid container spacing={0} sx={ styles.gridContainer }>
+        <Grid item xs={2} sx={ styles.gridItemsList }>
+          <Box>
+            <ItemsList/>
           </Box>
-        </Paper>
+        </Grid>
+        <Grid item xs={10}>
+          <Paper sx={ styles.paper }>
+            <Box sx={ styles.box }>
+              {
+                (itemsStore.action == ItemAction.Create && (
+                  <ItemForm />
+                ))
+              }
+              {
+                (itemsStore.action == ItemAction.Update && (
+                  <ItemForm item={ itemsStore.current! }/>
+                ))
+              }
+              {
+                itemsStore.action == ItemAction.View && (
+                  <ItemViewer item={ itemsStore.current! }/>
+                )
+              }
+              {
+                !itemsStore.action && (
+                  <Alert severity={'info'}>
+                    No item selected
+                  </Alert>
+                )
+              }
+            </Box>
+          </Paper>
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   )
 });
 

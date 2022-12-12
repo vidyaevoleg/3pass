@@ -1,33 +1,40 @@
 import React, {FC, useCallback} from 'react';
 import {observer} from 'mobx-react-lite';
 import {ItemAction, useStore} from 'Store';
-import {ListItemIcon, ListItemText, MenuItem, MenuList, Paper} from '@mui/material';
+import {ListItemIcon, ListItemText, MenuItem, MenuList, Paper, useTheme} from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {Truncated} from 'Components/UI/Truncated';
+import {useStyles} from './styles';
+
 
 export const ItemsList: FC = observer(() => {
   const { itemsStore } = useStore();
+
+  const theme = useTheme();
+  const styles = useStyles(theme);
 
   const addItemHandler = useCallback(() => {
     itemsStore.setAction(ItemAction.Create);
   }, []);
 
-  return <Paper>
+  return <Paper sx={ styles.paper }>
     <MenuList>
       <MenuItem
         onClick={addItemHandler}
+        sx={ styles.menuItem }
       >
         <ListItemIcon>
           <AddCircleIcon fontSize={'small'}/>
         </ListItemIcon>
         <ListItemText primary={'Add new'} />
-      </MenuItem>
+      </MenuItem >
       {
         itemsStore.all.map((item, index) => {
           return (
             <MenuItem
               key={index}
+              sx={ styles.menuItem }
               onClick={() => itemsStore.setCurrent(item.id, ItemAction.View)}
             >
               <ListItemIcon>
