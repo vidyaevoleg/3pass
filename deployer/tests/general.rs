@@ -6,16 +6,18 @@ use near_sdk::{testing_env, VMContext};
 #[cfg(all(test, not(target_arch = "wasm32")))]
 mod tests {
     use std::fmt::format;
-    use near_sdk::AccountId;
+    use near_sdk::{AccountId, Balance, Promise};
     use super::*;
 
     fn get_context() -> VMContext {
         let account_id = "bob";
         let current_account_id = "3pass";
+        let amount: Balance = 2_000_000_000_000_000_000_000_000;
 
         VMContextBuilder::new()
             .predecessor_account_id(account_id.parse().unwrap())
             .current_account_id(current_account_id.parse().unwrap())
+            .attached_deposit(amount)
             .build()
     }
 
@@ -27,14 +29,17 @@ mod tests {
         let account_id = context.predecessor_account_id.clone();
         let expected_account_id_string = format!("{}.{}", prefix.to_string(), current_id.to_string());
         let expected_account_id = AccountId::new_unchecked(expected_account_id_string);
+        let hash = "blabla";
         testing_env!(context);
 
         let mut contract = RegistryContract::default();
-        contract.deploy_vault(prefix.to_string());
+        contract.deploy_vault(prefix.to_string(), hash.to_string());
 
-        assert_eq!(
-            contract.get_vault(account_id).unwrap(),
-            expected_account_id
-        );
+        // TODO handle the above promise
+        // assert_eq!(
+        //     contract.get_vault(account_id).unwrap(),
+        //     expected_account_id
+        // )
+
     }
 }

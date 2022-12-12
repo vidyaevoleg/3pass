@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::serde::{Deserialize, Serialize};
-use near_sdk::{env, log, near_bindgen};
+use near_sdk::{AccountId, env, log, near_bindgen};
 use near_sdk::collections::{UnorderedMap};
 
 type Version = [u8; 2];
@@ -11,8 +11,10 @@ const VERSION: Version = [1, 0];
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize)]
 pub struct VaultContract {
+    owner: AccountId,
     vault: Vault,
     version: Version,
+    hash: String,
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
@@ -28,28 +30,34 @@ pub struct VaultItem {
     pub updated_at: u64
 }
 
-// Define the default, which automatically initializes the contract
-impl Default for VaultContract{
-    fn default() -> Self{
+// Implement the contract structure
+#[near_bindgen]
+impl VaultContract {
+    #[init]
+    pub fn new(owner: AccountId, hash: String) -> Self {
         let items: UnorderedMap<u16, VaultItem> = UnorderedMap::new(b"".to_vec());
         Self {
+            owner,
+            hash,
             vault: Vault { items },
             version: VERSION,
         }
     }
-}
 
-// Implement the contract structure
-#[near_bindgen]
-impl VaultContract {
+    #[private]
     pub fn add_item(&mut self, id: u16, hashed_content: String) {
+        self.check_owner();
+
         let timestamp = env::block_timestamp();
         assert!(self.vault.items.get(&id).is_none(), "KEY ALREADY EXISTS");
         let item_to_add = VaultItem { content: hashed_content, created_at: timestamp, updated_at: timestamp };
         self.vault.items.insert(&id, &item_to_add);
     }
 
+    #[private]
     pub fn update_item(&mut self, id: u16, hashed_content: String) {
+        self.check_owner();
+
         let timestamp = env::block_timestamp();
         let item_option = self.vault.items.get(&id);
         assert!(item_option.is_some(), "ITEM NOT FOUND");
@@ -59,20 +67,28 @@ impl VaultContract {
         self.vault.items.insert(&id, &item_to_update);
     }
 
-
+    #[private]
     pub fn delete_item(&mut self, id: u16) {
+        self.check_owner();
+
         self.vault.items.remove(&id);
     }
 
+    #[private]
     pub fn get_item(&self, id: u16) -> VaultItem {
         self.vault.items.get(&id).unwrap()
     }
 
+    #[private]
     pub fn get_all(&self) -> HashMap<u16, VaultItem> {
         let mut items: HashMap<u16, VaultItem> = HashMap::default();
         for (id, item) in self.vault.items.iter() {
             items.insert(id, item);
         }
         return items;
+    }
+
+    fn check_owner(&self) {
+        assert!(env::predecessor_account_id() == self.owner, "Must be the owner");
     }
 }
