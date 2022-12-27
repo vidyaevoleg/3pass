@@ -4,17 +4,20 @@ export const colors = {
   blue3: '#0c82d9',
   blue4: '#045edc',
   blue5: '#61a4d3',
+  blue6: '#4869E1', // lock icon
   white: '#fff',
   gray1: '#adabab',
   gray2: '#EDEFF2', // borders
   gray3: '#ABB3C1', // grid icon
   gray4: '#76839E', // expand more icon
-  black: 'rgba(0, 0, 0, 0.87)'
+  gray5: '#D7DAE0', // NewItem button border
+  black: 'rgba(0, 0, 0, 0.87)',
+  black2: '#202327', // NewItem button
 }
 
 const textPalette = {
-  primary: colors.black,
-  secondary: colors.gray2,
+  primary: colors.black2,
+  secondary: colors.gray4,
   link: colors.blue4,
   linkHover: colors.blue3
 };
@@ -41,19 +44,19 @@ const palette = {
 
 export const ThemeOptions = {
   typography: {
-    fontFamily: ['"Source Sans Pro"', 'sans-serif'].join(','),
+    fontFamily: "'Inter', sans-serif",
     h1: {
       fontSize: '3.6rem',
       color: textPalette.primary,
-      fontWeight: 300
+      fontWeight: 400
     },
     h2: {
       fontSize: '3rem',
-      fontWeight: 300
+      fontWeight: 400
     },
     h3: {
       fontSize: '2.4rem',
-      fontWeight: 300
+      fontWeight: 400
     },
     h4: {
       fontSize: '2.2rem'
