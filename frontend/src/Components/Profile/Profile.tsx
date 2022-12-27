@@ -6,9 +6,11 @@ import {Link} from 'Components/UI/Link';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import nearWalletLogo from 'Components/Header/nearWalletLogo.svg';
+import {Truncated} from 'Components/UI/Truncated';
 
 export const Profile: FC = () => {
   const { userStore } = useStore();
+  
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const closeHandler = useCallback(() => {
@@ -35,7 +37,7 @@ export const Profile: FC = () => {
         </Box>
         <Box sx={{ pl: '8px', width: '77px' }}>
           <Typography>
-            9f67...88b5
+            <Truncated title={userStore.accountId!} size={12}/>
           </Typography>
         </Box>
         <Tooltip title={userStore.accountId!}>
