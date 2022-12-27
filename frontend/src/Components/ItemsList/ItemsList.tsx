@@ -2,10 +2,13 @@ import React, {FC, useCallback} from 'react';
 import {observer} from 'mobx-react-lite';
 import {ItemAction, useStore} from 'Store';
 import {ListItemIcon, ListItemText, MenuItem, MenuList, Paper, useTheme} from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {Truncated} from 'Components/UI/Truncated';
 import {useStyles} from './styles';
+
+import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
+import LockIcon from '@mui/icons-material/Lock';
+import Box from '@mui/material/Box';
 
 
 export const ItemsList: FC = observer(() => {
@@ -20,15 +23,16 @@ export const ItemsList: FC = observer(() => {
 
   return <Paper sx={ styles.paper }>
     <MenuList>
-      <MenuItem
+      <Button
+        fullWidth
+        variant="outlined"
         onClick={addItemHandler}
-        sx={ styles.menuItem }
-      >
-        <ListItemIcon>
-          <AddCircleIcon fontSize={'small'}/>
-        </ListItemIcon>
-        <ListItemText primary={'Add new'} />
-      </MenuItem >
+        sx={ styles.button }>
+        <AddIcon
+          fontSize={'small'} 
+          sx={ styles.addIcon }/>
+            New Item
+      </Button>
       {
         itemsStore.all.map((item, index) => {
           return (
@@ -38,7 +42,12 @@ export const ItemsList: FC = observer(() => {
               onClick={() => itemsStore.setCurrent(item.id, ItemAction.View)}
             >
               <ListItemIcon>
-                <PersonIcon fontSize={'small'}/>
+                <Box>
+                  <LockIcon 
+                    fontSize={'small'} 
+                    sx={ styles.lockIcon }
+                    />
+                </Box>
               </ListItemIcon>
               <ListItemText
                 primary={
