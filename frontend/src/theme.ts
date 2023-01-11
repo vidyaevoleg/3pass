@@ -9,7 +9,7 @@ export const colors = {
   gray1: '#adabab',
   gray2: '#EDEFF2', // borders
   gray3: '#ABB3C1', // grid icon
-  gray4: '#76839E', // expand more icon
+  gray4: '#76839E', // expand more icon, no iems selected text
   gray5: '#D7DAE0', // NewItem button border
   black: 'rgba(0, 0, 0, 0.87)',
   black2: '#202327', // NewItem button
@@ -139,6 +139,6 @@ export const ThemeOptions = {
           color: colors.black
         }
       }
-    }
+    },
   }
 };

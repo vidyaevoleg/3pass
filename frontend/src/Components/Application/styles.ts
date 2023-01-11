@@ -7,6 +7,8 @@ export const useStyles = (theme: Theme) => (
       border: `1px solid ${colors.gray2}`, 
       borderTop: 0, 
       pl: '19px',
+      display: 'flex',
+      alignItems: 'center',
     },
     gridItemsList: {
       borderRight: `1px solid ${colors.gray2}`,
@@ -15,7 +17,11 @@ export const useStyles = (theme: Theme) => (
       boxShadow: 'none',
     },
     box: {
-      p: '20px',
+      p: theme.spacing(3), // 24px
+    },
+    typography: {
+      textAlign: 'center', 
+      color: `${colors.gray4}`,
     },
   }
 );

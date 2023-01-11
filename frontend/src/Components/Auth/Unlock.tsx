@@ -20,7 +20,7 @@ export const Unlock: FC<IProps> = ({ onSuccess }) => {
   }, [password, userStore]);
 
   return (
-    <Card sx={{ p: theme.spacing(2) }}>
+    <Card sx={{ p: theme.spacing(2), mt: '12px' }}>
       <CardContent>
         <Typography variant={'body1'}>
           Please give us a sign that it's you

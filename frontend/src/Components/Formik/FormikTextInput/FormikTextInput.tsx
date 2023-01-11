@@ -53,7 +53,7 @@ export const FormikTextInput: FC<IFormikTextInputProps> = ({
 
   return (
     <FormControl
-      sx={{ pb: spacing, display: 'block' }}
+      sx={{ pb: '24px', display: 'block', pt: '8px', }}
     >
       <TextInput
         {...props}
