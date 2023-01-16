@@ -6,38 +6,32 @@ import {HashPurpose} from 'Crypto';
 import Box from '@mui/material/Box';
 import {TextInput} from 'Components/UI/TextInput';
 import {Button} from 'Components/UI/Button';
+import Tooltip from '@mui/material/Tooltip';
 
-export const MasterPassword: FC = () => {
-  const [password, setPassword] = useState('');
+export const AuthorizeVault: FC = () => {
   const [loading, setLoading] = useState(false);
   const { userStore } = useStore();
   const theme = useTheme();
 
   const submitHandler = async (): Promise<void> => {
-    setLoading(true)
-    const { accountId } = userStore;
-    const { deployVault } = App.instance;
-    await deployVault(accountId!, password);
+    setLoading(true);
+    const { authorizeVault } = App.instance;
+    await authorizeVault();
   };
 
   return <Box mt={2}>
     <Card sx={{ p: theme.spacing(2) }}>
       <CardContent>
         <Typography variant={'body1'}>
-          Please create you password for security reasons
+          We've just deployed your vault contract.
         </Typography>
-        <Box mt={2}>
-          <TextInput
-            fullWidth
-            placeholder={'Very strong password'}
-            value={password}
-            onChange={setPassword}
-          />
-        </Box>
+        <Typography variant={'body1'}>
+          Now you need to authorize it
+        </Typography>
       </CardContent>
       <CardActions disableSpacing sx={{ p: theme.spacing(2) }}>
         <Button loading={loading} onClick={submitHandler}>
-          Sign up
+          Authorize
         </Button>
       </CardActions>
     </Card>

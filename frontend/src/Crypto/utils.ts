@@ -320,7 +320,7 @@ export class Utils {
       name: "PBKDF2",
       salt: saltBuf,
       iterations: iterations,
-      hash: { name: this.toWebCryptoAlgorithm(algorithm) },
+      hash: { name: Utils.toWebCryptoAlgorithm(algorithm) },
     };
 
     const impKey = await this.subtle.importKey(
@@ -640,11 +640,14 @@ export class Utils {
     return bytes;
   }
 
-  static toWebCryptoAlgorithm(algorithm: "sha1" | "sha256" | "sha512" | "md5"): string {
-    if (algorithm === "md5") {
-      throw new Error("MD5 is not supported in WebCrypto.");
+  static toWebCryptoAlgorithm(algorithm: "sha1" | "sha256" | "sha512"): string {
+    if (algorithm === "sha1") {
+      return "SHA-1";
+    } else if (algorithm === "sha256") {
+      return "SHA-256";
+    } else {
+      return "SHA-512";
     }
-    return algorithm === "sha1" ? "SHA-1" : algorithm === "sha256" ? "SHA-256" : "SHA-512";
   }
 
   // static getUrl(uriString: string): URL {

@@ -1,16 +1,16 @@
 import {
-  VAULT_REQUIRED_METHODS,
   IVaultContract,
   IGetAllResponse,
   INearState,
   IDeployerContract,
+  VAULT_CHANGE_METHODS,
   DEPLOYER_CONTRACT_ID,
   VAULT_CONTRACT_CONFIG,
   DEPLOYER_CONTRACT_CONFIG,
-  DEPLOYER_REQUIRED_METHODS,
+  DEPLOYER_CHANGE_METHODS
 } from 'Api';
 import {Near as Connection} from 'near-api-js/lib/near';
-import {WalletConnection} from 'near-api-js';
+import {WalletConnection, utils} from 'near-api-js';
 import {Contract as NearContract} from 'near-api-js/lib/contract';
 
 export class ContractService {
@@ -33,14 +33,14 @@ export class ContractService {
   async signIn () {
     await this.walletConnection.requestSignIn({
       contractId: this.deployerContract.contractId,
-      methodNames: DEPLOYER_REQUIRED_METHODS
+      methodNames: DEPLOYER_CHANGE_METHODS
     });
   }
 
   async signInVault () {
     await this.walletConnection.requestSignIn({
       contractId: this.vaultContract!.contractId,
-      methodNames: VAULT_REQUIRED_METHODS
+      methodNames: VAULT_CHANGE_METHODS
     });
   }
 
@@ -72,6 +72,10 @@ export class ContractService {
     });
   }
 
+  async getHash(): Promise<string> {
+    return this.vaultContract!.get_hash();
+  }
+
   async getAll(): Promise<IGetAllResponse> {
     return this.vaultContract!.get_all();
   }
@@ -86,9 +90,13 @@ export class ContractService {
     return this.deployerContract.delete_vault();
   }
 
-  async deployVault(prefix: string): Promise<void> {
+  async deployVault(prefix: string, hash: string): Promise<void> {
+    // near doesn't like dots in contract names
+    const fixedPrefix = prefix.replace(".", "_");
+
     return this.deployerContract.deploy_vault({
-      args: { prefix }
+      args: { prefix: fixedPrefix, hash },
+      amount: utils.format.parseNearAmount("2")
     });
   }
 }

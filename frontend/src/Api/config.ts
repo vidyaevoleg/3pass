@@ -5,8 +5,10 @@ import {IDeployerContract, INearState, IVaultContract} from './types';
 export const DEPLOYER_CONTRACT_ID = process.env.REACT_APP_DEPLOYER_CONTRACT_ID;
 
 export const NETWORK_CONFIG = getConfig(process.env.REACT_APP_NODE_ENV || 'development');
-export const VAULT_REQUIRED_METHODS = ["add_item", "update_item", "delete_item"];
-export const DEPLOYER_REQUIRED_METHODS = ["deploy_vault", "delete_vault"];
+export const VAULT_CHANGE_METHODS = ['add_item', 'update_item', 'delete_item'];
+export const VAULT_VIEW_METHODS = ['get_all', 'get_item', 'get_hash'];
+export const DEPLOYER_CHANGE_METHODS = ['deploy_vault', 'delete_vault'];
+export const DEPLOYER_VIEW_METHODS = ['get_vault'];
 
 export const CONNECTION_CONFIG: ConnectConfig = Object.assign(
   { deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() }, headers: {} },
@@ -14,13 +16,13 @@ export const CONNECTION_CONFIG: ConnectConfig = Object.assign(
 );
 
 export const VAULT_CONTRACT_CONFIG = {
-  viewMethods: ['get_all', 'get_item'],
-  changeMethods: [...VAULT_REQUIRED_METHODS],
+  viewMethods: VAULT_VIEW_METHODS,
+  changeMethods: VAULT_CHANGE_METHODS,
 };
 
 export const DEPLOYER_CONTRACT_CONFIG = {
-  viewMethods: ['get_vault'],
-  changeMethods: [...DEPLOYER_REQUIRED_METHODS],
+  viewMethods: DEPLOYER_VIEW_METHODS,
+  changeMethods: DEPLOYER_CHANGE_METHODS,
 };
 
 
@@ -32,13 +34,17 @@ export const initNear = (): Promise<INearState> => {
 
       if (accountId) {
         connection.account(accountId).then(account => {
-          const state: INearState = {
-            accountId,
-            account,
-            connection,
-            walletConnection
-          }
-          resolve(state);
+          account.getAccountDetails().then(info => {
+            const authorizedApps = info.authorizedApps.map(app => app.contractId);
+            const state: INearState = {
+              account,
+              accountId,
+              connection,
+              authorizedApps,
+              walletConnection
+            }
+            resolve(state);
+          })
         })
       } else {
         const state: INearState = {

@@ -1,11 +1,13 @@
 import React, {FC, ReactNode, useCallback, useEffect, useState} from 'react';
-import {Register} from './Register';
 import {observer} from 'mobx-react-lite';
 import {useStore} from 'Store';
-import {WalletLogin} from 'Components/AuthProvider/WalletLogin';
-import {Unlock} from 'Components/AuthProvider/Unlock';
+import {WalletLogin} from './WalletLogin';
+import {Unlock} from './Unlock';
 import {Skeleton} from 'Components/UI/Skeleton';
 import {App} from 'Services/AppService';
+import {MasterPassword} from './MasterPassword';
+import { Login } from './Login';
+import {AuthorizeVault} from 'Components/AuthProvider/AuthorizeVault';
 
 interface IProps {
   children: ReactNode,
@@ -16,13 +18,9 @@ export const AuthProvider: FC<IProps> = observer(({ children }) => {
   const { accountId, online } = userStore;
   const [loading, setLoading] = useState(false);
 
-  const onUnlockSuccess = () => {
+  const onLoginSuccess = useCallback(() => {
     userStore.signInSuccess();
-  };
-
-  const onRegisterSuccess = () => {
-    userStore.signInSuccess();
-  };
+  }, [userStore]);
 
   useEffect(() => {
     if (accountId) {
@@ -45,11 +43,15 @@ export const AuthProvider: FC<IProps> = observer(({ children }) => {
 
   if (accountId) {
     if (userStore.IsReadyForFastSignIn) {
-      return <Unlock onSuccess={onUnlockSuccess} />
-      // } else if (store.user.hasContract) { // TODO if user has deployed contract
-      //   return <Login/>
+      return <Unlock onSuccess={onLoginSuccess}/>
+    } else if (!userStore.hasDeployedVault) {
+      return <MasterPassword />
+    } else if (!userStore.isAuthorizedForLogin) {
+      return <AuthorizeVault />
+    } else if (userStore.hasDeployedVault) {
+      return <Login onSuccess={onLoginSuccess}/>
     } else {
-      return <Register onSuccess={onRegisterSuccess}/>
+      return <></>
     }
   } else {
     return <WalletLogin/>

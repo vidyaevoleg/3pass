@@ -18,7 +18,8 @@ export const createStore = (state: INearState, app: IApp) => {
 
   const user = UserStore.create({
     accountId,
-    keyHash: keysService.keyHash
+    keyHash: keysService.keyHash,
+    authorizedApps: state.authorizedApps,
   });
   const items = ItemsListStore.create();
 

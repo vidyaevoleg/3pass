@@ -1,8 +1,15 @@
-import {CryptoService, EncString, SymmetricCryptoKey} from 'Crypto';
+import {CryptoService, EncString, HashPurpose, SymmetricCryptoKey} from 'Crypto';
 import {KeysService} from 'Services/KeysService';
-import { INearState } from 'Api';
+import {INearState} from 'Api';
 import {ContractService} from 'Services/ContractService';
 import {createStore, RootStoreInstance} from 'Store';
+
+
+interface IKeys {
+  cryptoKey: SymmetricCryptoKey,
+  keyHash: string,
+  encryptedCryptoKey: string
+}
 
 export interface IApp {
   store: RootStoreInstance,
@@ -12,7 +19,10 @@ export interface IApp {
   contractService: ContractService,
   encrypt: (value: object) => Promise<string>,
   decrypt: <T>(value: string) => Promise<T>,
-  afterSignUp: (cryptoKey: SymmetricCryptoKey, keyHashValue: string, encryptedCryptoKey: string) => Promise<void>;
+  authorizeVault: () => Promise<void>;
+  fastSignIn: (login: string, password: string) => Promise<boolean>,
+  vaultSignIn: (login: string, password: string) => Promise<boolean>,
+  deployVault: (login: string, password: string) => Promise<void>;
 }
 
 export class App implements IApp {
@@ -51,12 +61,43 @@ export class App implements IApp {
     return JSON.parse(decString) as T;
   }
 
-  async afterSignUp(cryptoKey: SymmetricCryptoKey, keyHashValue: string, encryptedCryptoKey: string): Promise<void> {
-    this.keysService.setup(cryptoKey, keyHashValue, encryptedCryptoKey);
+  fastSignIn = async (login: string, password: string): Promise<boolean> =>  {
+    const { keyHash: userHash } = await this.makeKeys(login, password, HashPurpose.LocalAuthorization);
+    const result = this.keysService.keyHash === userHash;
+    if (result) await this.afterSignIn(login, password);
+    return result;
+  };
+
+  vaultSignIn = async (login: string, password: string): Promise<boolean> => {
+    const { keyHash: userHash } = await this.makeKeys(login, password, HashPurpose.VaultAuthorization);
+    const vaultHash = await this.contractService.getHash();
+    const result = vaultHash === userHash;
+    if (result) await this.afterSignIn(login, password);
+    return result;
+  };
+
+  authorizeVault = async (): Promise<void> => {
     // here we close the current near connection with the deployer contract
     await this.contractService.signOut();
     // and create new near connection with the vault contract
     // near can have only one active contract connection
     await this.contractService.signInVault();
+  }
+
+  afterSignIn = async (login: string, password: string): Promise<void> => {
+    const { cryptoKey, keyHash, encryptedCryptoKey } = await this.makeKeys(login, password);
+    this.keysService.setup(cryptoKey, keyHash, encryptedCryptoKey);
+  }
+
+  makeKeys = async (login: string, password: string, purpose: HashPurpose = HashPurpose.LocalAuthorization): Promise<IKeys> => {
+    const cryptoKey = await this.cryptoService.makeKey(password, this.accountId!);
+    const keyHash = await this.cryptoService.hashPassword(password, cryptoKey.key, purpose);
+    const [_, { encryptedString: encryptedCryptoKey }] = await this.cryptoService.makeEncKey(cryptoKey);
+    return { cryptoKey, keyHash, encryptedCryptoKey: encryptedCryptoKey! }
+  }
+
+  deployVault = async (login: string, password: string): Promise<void> => {
+    const { keyHash: userHash } = await this.makeKeys(login, password, HashPurpose.VaultAuthorization);
+    await this.contractService.deployVault(login, userHash);
   }
 }

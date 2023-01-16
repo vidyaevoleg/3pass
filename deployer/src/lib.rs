@@ -9,15 +9,16 @@ use near_sdk::collections::{UnorderedMap};
 type Version = [u8; 2];
 const VERSION: Version = [1, 0];
 // TODO calculate the fee and ask users to pay it
-const FEE: Balance = 2_000_000_000_000_000_000_000_000;
-const TGAS: Gas = Gas(10u64.pow(12)); // 10e12yⓃ
+const FEE: Balance = 2_000_000_000_000_000_000; // 2 * 10e18yⓃ, 2 NEAR
+const DEFAULT_GAS: Gas = Gas(5_000_000_000_000); // 5 * 10e12yⓃ
+const DEFAULT_ALLOWANCE: Balance = 250_000_000_000_000_000; // 25 * 10e16yⓃ, 0.25 NEAR
 const NO_DEPOSIT: Balance = 0; // 0yⓃ
-const CODE: &[u8] = include_bytes!("../../vault/target/wasm32-unknown-unknown/release/threepass.wasm");
+const VAULT_CODE: &[u8] = include_bytes!("../../vault/target/wasm32-unknown-unknown/release/threepass.wasm");
 
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize)]
 pub struct RegistryContract {
-    items: UnorderedMap<AccountId, AccountId>,
+    vaults: UnorderedMap<AccountId, AccountId>,
     version: Version
 }
 
@@ -39,9 +40,9 @@ struct VaultContractInitArgs {
 // Define the default, which automatically initializes the contract
 impl Default for RegistryContract  {
     fn default() -> Self{
-        let items: UnorderedMap<AccountId, AccountId> = UnorderedMap::new(b"".to_vec());
+        let vaults: UnorderedMap<AccountId, AccountId> = UnorderedMap::new(b"".to_vec());
         Self {
-            items,
+            vaults,
             version: VERSION
         }
     }
@@ -56,17 +57,17 @@ impl RegistryContract {
         let sender = env::predecessor_account_id();
 
         match self.get_vault(sender.clone()) {
-            Some(_) => self.deploy_vault_error(sender, env::attached_deposit()),
+            Some(_) => self.deploy_vault_error(sender, env::attached_deposit(), "vault already exists"),
             None => self.deploy_vault_contract(sender, env::attached_deposit(), prefix, hash)
         }
     }
 
     pub fn get_vault(&self, account_id: AccountId) -> Option<AccountId> {
-        self.items.get(&account_id)
+        self.vaults.get(&account_id)
     }
 
     pub fn delete_vault(&mut self) {
-        self.items.remove(&env::predecessor_account_id());
+        self.vaults.remove(&env::predecessor_account_id());
     }
 
     fn deploy_vault_contract(&mut self, account_id: AccountId, amount: Balance, prefix: String, hash: String) -> Promise {
@@ -80,7 +81,6 @@ impl RegistryContract {
         assert!(
             amount >= FEE,
             "Too low fee"
-            // format!("Minimal fee is {}", FEE.to_string()).to_str()
         );
 
         let init_args = near_sdk::serde_json::to_vec(&VaultContractInitArgs { hash, owner: account_id.clone() }).unwrap();
@@ -89,8 +89,9 @@ impl RegistryContract {
             .create_account()
             .transfer(amount)
             .add_full_access_key(env::signer_account_pk())
-            .deploy_contract(CODE.to_vec())
-            .function_call("init".to_owned(), init_args, NO_DEPOSIT, TGAS * 5);
+            .deploy_contract(VAULT_CODE.to_vec())
+            .function_call("new".to_owned(), init_args, NO_DEPOSIT, DEFAULT_GAS);
+            // .add_access_key(env::signer_account_pk(), DEFAULT_ALLOWANCE, account_id.clone(),  "add_item,update_item".to_string()  );
 
         promise.then(
             Self::ext(env::current_account_id()).deploy_vault_contract_callback(
@@ -101,9 +102,10 @@ impl RegistryContract {
         )
     }
 
-    fn deploy_vault_error(&self, account_id: AccountId, amount: Balance) -> Promise {
+    fn deploy_vault_error(&self, account_id: AccountId, amount: Balance, error: &str) -> Promise {
+        log!(format!("error while deploying the vault contract, returning {amount}yⓃ to {account_id}"));
         Promise::new(account_id).transfer(amount);
-        env::panic_str("contract already deployed");
+        env::panic_str(error);
     }
 
     #[private]
@@ -115,16 +117,12 @@ impl RegistryContract {
         #[callback_result] deploy_result: Result<(), PromiseError>,
     ) -> bool {
         if let Ok(_result) = deploy_result {
-            self.items.insert(&account_id, &vault_account_id);
-            log!(format!("Correctly created and deployed to {}", vault_account_id));
+            self.vaults.insert(&account_id, &vault_account_id);
+            log!(format!("Vault deployed to {}", vault_account_id));
             return true;
         };
 
-        log!(format!(
-            "Error creating {vault_account_id}, returning {attached}yⓃ to {account_id}"
-        ));
-
-        Promise::new(account_id).transfer(attached);
+        self.deploy_vault_error(account_id, attached, "error occurred while creating the vault");
         false
     }
 }

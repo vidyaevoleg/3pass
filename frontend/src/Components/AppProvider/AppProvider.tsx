@@ -41,7 +41,7 @@ export const WithApp: FC<{ children: ReactNode }> = ({children}) => {
   useEffect(() => {
     if (!instance) {
       setLoading(true);
-      initialize().then(() => setLoading(false));
+      initialize().finally(() => setLoading(false));
     }
   }, [])
 

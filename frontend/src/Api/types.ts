@@ -16,6 +16,7 @@ export interface IVaultContract extends NearContract {
   delete_item: (args: any) => void;
   get_item: (args: any) => Promise<IVaultItemValue>;
   get_all: () => Promise<IGetAllResponse>;
+  get_hash: () => Promise<string>;
 }
 
 export interface IDeployerContract extends NearContract {
@@ -29,4 +30,5 @@ export interface INearState {
   walletConnection: WalletConnection,
   accountId?: string,
   account?: Account,
+  authorizedApps?: string[]
 }
