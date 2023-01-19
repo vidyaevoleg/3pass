@@ -1,0 +1,1 @@
+Self-contained contract that provides CRUD functionality to manage secured data
