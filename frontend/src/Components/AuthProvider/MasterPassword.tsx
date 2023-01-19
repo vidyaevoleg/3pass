@@ -9,16 +9,15 @@ import {Button} from 'Components/UI/Button';
 
 export const MasterPassword: FC = () => {
   const [password, setPassword] = useState('');
-  const theme = useTheme();
+  const [loading, setLoading] = useState(false);
   const { userStore } = useStore();
+  const theme = useTheme();
 
   const submitHandler = async (): Promise<void> => {
-    const { cryptoService } = App.instance;
-    const cryptoKey = await cryptoService.makeKey(password, userStore.accountId!);
-    const [_, { encryptedString: encryptedCryptoKey }] = await cryptoService.makeEncKey(cryptoKey);
-    const keyHash = await cryptoService.hashPassword(password, cryptoKey,HashPurpose.LocalAuthorization);
-
-    App.instance.afterSignUp(cryptoKey, keyHash, encryptedCryptoKey!)
+    setLoading(true)
+    const { accountId } = userStore;
+    const { deployVault } = App.instance;
+    await deployVault(accountId!, password);
   };
 
   return <Box mt={2}>
@@ -37,7 +36,7 @@ export const MasterPassword: FC = () => {
         </Box>
       </CardContent>
       <CardActions disableSpacing sx={{ p: theme.spacing(2) }}>
-        <Button onClick={submitHandler}>
+        <Button loading={loading} onClick={submitHandler}>
           Sign up
         </Button>
       </CardActions>

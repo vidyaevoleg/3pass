@@ -16,14 +16,11 @@ const initialValues = {
   type: ItemType.Login
 };
 
-const initFormValues = (item: Instance<typeof Item>): any=> {
-  const values = {...initialValues};
-  Object.keys(initialValues).forEach((key: string) => {
-    // TODO FIX ME
-    // @ts-ignore
-    values[key] = item[key];
-  });
-  return values;
+const initFormValues = (item: Instance<typeof Item>): Record<string, unknown>=> {
+  return Object.keys(initialValues).reduce((values, key) => {
+    values[key] = (item as any)[key];
+    return values;
+  }, {...initialValues} as Record<string, unknown>);
 };
 
 export const ItemForm: FC<IProps> = ({ item }) => {
@@ -40,8 +37,6 @@ export const ItemForm: FC<IProps> = ({ item }) => {
       await itemsStore.add(itemToSave);
     }
   }, [itemsStore]);
-
-  console.log(formValues);
 
   return (
     <FormikForm onSubmit={saveHandler} initialValues={formValues}>

@@ -1,10 +1,10 @@
 import { types } from 'mobx-state-tree'
 import {App} from 'Services/AppService';
-import {HashPurpose} from 'Crypto';
 
 export const UserStore = types.model({
   accountId: types.maybeNull(types.string),
   vaultAccountId: types.maybeNull(types.string),
+  authorizedApps: types.maybeNull(types.array(types.string)),
   online: types.maybeNull(types.boolean),
   keyHash: types.maybeNull(types.string)
 })
@@ -23,18 +23,8 @@ export const UserStore = types.model({
 
     const lock = () => {
       const { keysService } = App.instance;
-      keysService.setCryptoKey(undefined);
+      keysService.resetKeys();
       self.online = false;
-    };
-
-    const fastSignIn = async (password: string): Promise<boolean> => {
-      const { cryptoService, keysService, accountId } = App.instance;
-      const storedKeyHash = keysService.keyHash;
-      const cryptoKey = await cryptoService.makeKey(password, accountId!);
-      const keyHashToCheck = await cryptoService.hashPassword(password, cryptoKey, HashPurpose.LocalAuthorization);
-      const result = storedKeyHash === keyHashToCheck;
-      if (result) keysService.setCryptoKey(cryptoKey);
-      return result;
     };
 
     const signInSuccess = () => {
@@ -50,17 +40,20 @@ export const UserStore = types.model({
     return {
       lock,
       signOut,
-      fastSignIn,
       signInSuccess,
       contractSignIn,
       setVaultContractId,
     }
   })
   .views((self) => ({
-  get IsReadyForFastSignIn () {
+  get isReadyForFastSignIn (): boolean {
     return !!self.keyHash;
   },
-  get IsReadyForRegister () {
+  get isAuthorizedForLogin(): boolean {
+    // here we check that user has authorized the vault contract
+    return Boolean(!!self.vaultAccountId && self.authorizedApps?.includes(self.vaultAccountId));
+  },
+  get hasDeployedVault(): boolean {
     return !!self.vaultAccountId;
   }
 }));

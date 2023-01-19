@@ -42,7 +42,7 @@ export const Header: FC = observer(() => {
             }
           </Grid>
           <Grid item xs={2}>
-            { userStore.readyForFastSignIn && 
+            { userStore.isReadyForFastSignIn &&
               <Box 
                 display='flex'
                 justifyContent='center'

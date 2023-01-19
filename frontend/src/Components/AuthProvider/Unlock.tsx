@@ -4,6 +4,7 @@ import { Card, CardActions, CardContent, Typography, useTheme} from '@mui/materi
 import {TextInput} from 'Components/UI/TextInput';
 import {Button} from 'Components/UI/Button';
 import {useStore} from 'Store';
+import {App} from 'Services/AppService';
 
 interface IProps {
   onSuccess: () => void;
@@ -15,7 +16,9 @@ export const Unlock: FC<IProps> = ({ onSuccess }) => {
   const { userStore } = useStore();
 
   const submitHandler = useCallback(async () => {
-    const result = await userStore.fastSignIn(password);
+    const { fastSignIn } = App.instance;
+    const result = await fastSignIn(userStore.accountId!, password);
+
     if (result) {
       onSuccess();
     } else {
@@ -27,7 +30,7 @@ export const Unlock: FC<IProps> = ({ onSuccess }) => {
     <Card sx={{ p: theme.spacing(2) }}>
       <CardContent>
         <Typography variant={'body1'}>
-          Please give us a sign that it's you
+          Please type your master password
         </Typography>
         <Box mt={2}>
           <TextInput
@@ -42,7 +45,7 @@ export const Unlock: FC<IProps> = ({ onSuccess }) => {
       </CardContent>
       <CardActions disableSpacing sx={{ p: theme.spacing(2) }}>
         <Button onClick={submitHandler}>
-          Login
+          Unlock
         </Button>
       </CardActions>
     </Card>

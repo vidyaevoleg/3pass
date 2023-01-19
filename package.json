@@ -9,10 +9,10 @@
     "build": "npm run build:contract && npm run build:deployer && npm run build:web",
     "build:web": "cd frontend && npm run build",
     "build:deployer": "cd deployer && rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release",
-    "build:contract": "cd contract && rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release",
+    "build:contract": "cd vault && rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release",
     "build:cargo": "rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release",
     "test": "npm run test:unit",
-    "test:unit": "cd contract && cargo test",
+    "test:unit": "cd vault && cargo test",
     "deps-install": "npm install && cd frontend && npm install && cd .."
   },
   "devDependencies": {

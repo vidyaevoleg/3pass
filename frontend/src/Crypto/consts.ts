@@ -3,8 +3,8 @@ export enum KdfType {
 }
 
 export enum HashPurpose {
-  ServerAuthorization = 1,
   LocalAuthorization = 2,
+  VaultAuthorization = 1,
 }
 
 export const DEFAULT_KDF_TYPE = KdfType.PBKDF2_SHA256;

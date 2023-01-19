@@ -17,14 +17,20 @@ export class KeysService {
   }
 
   setup (cryptoKeyValue: SymmetricCryptoKey, keyHashValue: string, encryptedCryptoKeyValue: string) {
-    this.encryptedCryptoKey = encryptedCryptoKeyValue;
     this.keyHash = keyHashValue;
     this.cryptoKey = cryptoKeyValue;
+    this.encryptedCryptoKey = encryptedCryptoKeyValue;
+
     localStorage.setItem('keyHash', keyHashValue);
   }
 
-  setCryptoKey = (value?: SymmetricCryptoKey) => {
-    this.cryptoKey = value;
+  // setCryptoKey = (value?: SymmetricCryptoKey) => {
+  //   this.cryptoKey = value;
+  // }
+
+  resetKeys = () => {
+    this.cryptoKey = undefined;
+    this.encryptedCryptoKey = undefined;
   }
 
   get readyForFastLogin (): boolean {

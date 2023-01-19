@@ -21,19 +21,19 @@ export const FormikTextInput: FC<IFormikTextInputProps> = ({
   const theme = useTheme();
   const { setValue } = helpers;
   const [textValue, setTextValue] = useState(field.value);
-  let timeout: any;
+  let timeout: unknown;
 
   useEffect(() => {
     setTextValue(field.value);
   }, [field.value]);
 
-  const handleChange = useCallback((value: any) => {
+  const handleChange = useCallback((value: string) => {
     setTextValue(value);
 
     if (debounce) {
       const debounceTime: number = typeof debounce === 'boolean' ? 750 : debounce;
       if (timeout) {
-        clearTimeout(timeout);
+        clearTimeout(timeout as number);
       }
       timeout = setTimeout(() => {
         setValue(value);

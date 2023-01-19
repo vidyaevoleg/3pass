@@ -13,7 +13,7 @@ export class SymmetricCryptoKey {
   // @ts-ignore
   macKeyB64: string;
 
-  meta: any;
+  meta: Record<string, string>;
 
   constructor(key: ArrayBuffer, encType?: EncryptionType) {
     if (key == null) {
@@ -32,6 +32,7 @@ export class SymmetricCryptoKey {
 
     this.key = key;
     this.encType = encType;
+    this.meta = {};
 
     if (encType === EncryptionType.AesCbc256_B64 && key.byteLength === 32) {
       this.encKey = key;

@@ -1,8 +1,8 @@
 import {EncryptedObject, IEncrypted, Utils} from './utils';
-import { EncArrayBuffer } from './encArrayBuffer';
-import { SymmetricCryptoKey } from './symmetricCryptoKey';
-import { EncString } from './encString';
-import { DEFAULT_KDF_ITERATIONS, DEFAULT_KDF_TYPE, HashPurpose, KdfType } from './consts';
+import {EncArrayBuffer} from './encArrayBuffer';
+import {SymmetricCryptoKey} from './symmetricCryptoKey';
+import {EncString} from './encString';
+import {DEFAULT_KDF_ITERATIONS, DEFAULT_KDF_TYPE, HashPurpose, KdfType} from './consts';
 
 export class CryptoService {
   async makeKey(
@@ -28,16 +28,16 @@ export class CryptoService {
 
   async hashPassword(
     password: string,
-    key: SymmetricCryptoKey,
+    salt: string | ArrayBuffer,
     hashPurpose?: HashPurpose
   ): Promise<string> {
-    if (password == null || key == null) {
+    if (password == null || salt == null) {
       throw new Error('Invalid parameters.');
     }
-
-    const iterations = hashPurpose === HashPurpose.LocalAuthorization ? 2 : 1;
-    const hash = await Utils.pbkdf2(key.key, password, 'sha256', iterations);
-    return Utils.fromBufferToB64(hash);
+    const iterations = hashPurpose == HashPurpose.LocalAuthorization ? 2 : 1;
+    const hashBuff = await Utils.pbkdf2(password, salt, 'sha256', iterations);
+    const hash = Utils.fromBufferToB64(hashBuff);
+    return hash;
   }
 
   async makeEncKey(key: SymmetricCryptoKey): Promise<[SymmetricCryptoKey, EncString]> {

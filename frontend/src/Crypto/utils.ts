@@ -320,13 +320,13 @@ export class Utils {
       name: "PBKDF2",
       salt: saltBuf,
       iterations: iterations,
-      hash: { name: this.toWebCryptoAlgorithm(algorithm) },
+      hash: { name: Utils.toWebCryptoAlgorithm(algorithm) },
     };
 
     const impKey = await this.subtle.importKey(
       "raw",
       passwordBuf,
-      { name: "PBKDF2" } as any,
+      { name: "PBKDF2" } as HmacImportParams,
       false,
       ["deriveBits"]
     );
@@ -351,10 +351,10 @@ export class Utils {
       hash: { name: this.toWebCryptoAlgorithm(algorithm) },
     };
 
-    const impKey = await this.subtle.importKey("raw", ikm, { name: "HKDF" } as any, false, [
+    const impKey = await this.subtle.importKey("raw", ikm, { name: "HKDF" } as HmacImportParams, false, [
       "deriveBits",
     ]);
-    return await Utils.subtle.deriveBits(hkdfParams as any, impKey, outputByteSize * 8);
+    return await Utils.subtle.deriveBits(hkdfParams, impKey, outputByteSize * 8);
   }
 
   // ref: https://tools.ietf.org/html/rfc5869
@@ -481,7 +481,7 @@ export class Utils {
   }
 
   static async aesEncrypt(data: ArrayBuffer, iv: ArrayBuffer, key: ArrayBuffer): Promise<ArrayBuffer> {
-    const impKey = await Utils.subtle.importKey("raw", key, { name: "AES-CBC" } as any, false, [
+    const impKey = await Utils.subtle.importKey("raw", key, { name: "AES-CBC" } as HmacImportParams, false, [
       "encrypt",
     ]);
     return await Utils.subtle.encrypt({ name: "AES-CBC", iv: iv }, impKey, data);
@@ -518,7 +518,7 @@ export class Utils {
       key.meta = {};
     }
     if (key.meta.encKeyByteString == null) {
-      key.meta.encKeyByteString = p.encKey;
+      key.meta.encKeyByteString = p.encKey!;
     }
     if (p.macKey != null && key.meta.macKeyByteString == null) {
       key.meta.macKeyByteString = p.macKey;
@@ -538,7 +538,7 @@ export class Utils {
   }
 
   static async aesDecrypt(data: ArrayBuffer, iv: ArrayBuffer, key: ArrayBuffer): Promise<ArrayBuffer> {
-    const impKey = await Utils.subtle.importKey("raw", key, { name: "AES-CBC" } as any, false, [
+    const impKey = await Utils.subtle.importKey("raw", key, { name: "AES-CBC" } as HmacImportParams, false, [
       "decrypt",
     ]);
     return await Utils.subtle.decrypt({ name: "AES-CBC", iv: iv }, impKey, data);
@@ -640,11 +640,14 @@ export class Utils {
     return bytes;
   }
 
-  static toWebCryptoAlgorithm(algorithm: "sha1" | "sha256" | "sha512" | "md5"): string {
-    if (algorithm === "md5") {
-      throw new Error("MD5 is not supported in WebCrypto.");
+  static toWebCryptoAlgorithm(algorithm: "sha1" | "sha256" | "sha512"): string {
+    if (algorithm === "sha1") {
+      return "SHA-1";
+    } else if (algorithm === "sha256") {
+      return "SHA-256";
+    } else {
+      return "SHA-512";
     }
-    return algorithm === "sha1" ? "SHA-1" : algorithm === "sha256" ? "SHA-256" : "SHA-512";
   }
 
   // static getUrl(uriString: string): URL {
