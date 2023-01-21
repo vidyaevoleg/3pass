@@ -1,8 +1,8 @@
-import { SymmetricCryptoKey } from 'Crypto';
+import { SymmetricKey } from 'Crypto';
 
 export class KeysService {
   public keyHash?: string;
-  public cryptoKey?: SymmetricCryptoKey;
+  public cryptoKey?: SymmetricKey;
   private encryptedCryptoKey?: string;
 
   constructor() {
@@ -16,7 +16,7 @@ export class KeysService {
     localStorage.clear();
   }
 
-  setup (cryptoKeyValue: SymmetricCryptoKey, keyHashValue: string, encryptedCryptoKeyValue: string) {
+  setup (cryptoKeyValue: SymmetricKey, keyHashValue: string, encryptedCryptoKeyValue: string) {
     this.keyHash = keyHashValue;
     this.cryptoKey = cryptoKeyValue;
     this.encryptedCryptoKey = encryptedCryptoKeyValue;

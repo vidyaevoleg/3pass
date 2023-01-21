@@ -1,26 +1,25 @@
-import { Utils, EncryptionType } from './utils';
+import {EncryptionType} from 'Crypto/types';
+import Utils from 'Utils';
 
-export class SymmetricCryptoKey {
-  key: ArrayBuffer;
-  encKey?: ArrayBuffer;
-  macKey?: ArrayBuffer;
+export class SymmetricKey {
   encType: EncryptionType;
 
-  // @ts-ignore
+  key: ArrayBuffer;
+  encKey: ArrayBuffer;
+  macKey?: ArrayBuffer;
+
   keyB64: string;
-  // @ts-ignore
   encKeyB64: string;
-  // @ts-ignore
-  macKeyB64: string;
+  macKeyB64?: string;
 
   meta: Record<string, string>;
 
   constructor(key: ArrayBuffer, encType?: EncryptionType) {
-    if (key == null) {
+    if (!key) {
       throw new Error("Must provide key");
     }
 
-    if (encType == null) {
+    if (!encType) {
       if (key.byteLength === 32) {
         encType = EncryptionType.AesCbc256_B64;
       } else if (key.byteLength === 64) {
@@ -47,28 +46,9 @@ export class SymmetricCryptoKey {
       throw new Error("Unsupported encType/key length.");
     }
 
-    if (this.key != null) {
-      this.keyB64 = Utils.fromBufferToB64(this.key);
-    }
-    if (this.encKey != null) {
-      this.encKeyB64 = Utils.fromBufferToB64(this.encKey);
-    }
-    if (this.macKey != null) {
-      this.macKeyB64 = Utils.fromBufferToB64(this.macKey);
-    }
+    this.keyB64 = Utils.string.fromBufferToB64(this.key);
+    this.encKeyB64 = Utils.string.fromBufferToB64(this.encKey);
+    if (this.macKey != null)
+      this.macKeyB64 = Utils.string.fromBufferToB64(this.macKey);
   }
-
-  toJSON() {
-    // The whole object is constructed from the initial key, so just store the B64 key
-    return { keyB64: this.keyB64 };
-  }
-
-  // static fromJSON(obj: Jsonify<SymmetricCryptoKey>): SymmetricCryptoKey {
-  //   if (obj == null) {
-  //     return null;
-  //   }
-  //
-  //   const arrayBuffer = Utils.fromB64ToArray(obj.keyB64).buffer;
-  //   return new SymmetricCryptoKey(arrayBuffer);
-  // }
 }

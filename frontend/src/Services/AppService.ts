@@ -1,12 +1,11 @@
-import {CryptoService, EncString, HashPurpose, SymmetricCryptoKey} from 'Crypto';
+import {CryptoService, EncryptedString, HashPurpose, SymmetricKey} from 'Crypto';
 import {KeysService} from 'Services/KeysService';
 import {INearState} from 'Api';
 import {ContractService} from 'Services/ContractService';
 import {createStore, RootStoreInstance} from 'Store';
 
-
 interface IKeys {
-  cryptoKey: SymmetricCryptoKey,
+  cryptoKey: SymmetricKey,
   keyHash: string,
   encryptedCryptoKey: string
 }
@@ -52,12 +51,12 @@ export class App implements IApp {
   async encrypt(value: object): Promise<string> {
     const json = JSON.stringify(value);
     const encString = await this.cryptoService.encrypt(json, this.keysService.cryptoKey!);
-    return encString.encryptedString!;
+    return encString.encryptedString;
   }
 
   async decrypt<T>(value: string): Promise<T> {
-    const encString = new EncString(value);
-    const decString = await this.cryptoService.decryptToUtf8(encString, this.keysService.cryptoKey!);
+    const encString = EncryptedString.fromString(value);
+    const decString = await this.cryptoService.decrypt(encString, this.keysService.cryptoKey!);
     return JSON.parse(decString) as T;
   }
 

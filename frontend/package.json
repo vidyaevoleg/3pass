@@ -18,6 +18,7 @@
     "@types/node": "^16.11.59",
     "@types/react": "^18.0.20",
     "@types/react-dom": "^18.0.6",
+    "@types/tldjs": "^2.3.1",
     "buffer": "^6.0.3",
     "formik": "^2.2.9",
     "lodash": "^4.17.21",

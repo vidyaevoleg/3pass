@@ -1,23 +1,19 @@
-import { useCallback } from 'react';
+import {FC, useCallback} from 'react';
 import {Formik, FormikConfig, FormikHelpers, FormikValues} from 'formik';
 
 type IProps<T> = Omit<FormikConfig<T>, 'onSubmit'> & {
   enableReinitialize?: boolean;
-  onSubmit?: (values: FormikValues, formikHelpers: FormikHelpers<any>) => void | Promise<any>;
+  onSubmit?: (values: FormikValues, formikHelpers: FormikHelpers<T>) => void | Promise<void> | Promise<FormikValues>;
 };
 
-export function FormikForm<T>({
-    onSubmit,
-    enableReinitialize = true,
-    initialValues,
-    ...other
-  }: IProps<T>) {
+export const FormikForm = <T extends FormikValues,>(props: IProps<T>) => {
+  const { onSubmit, initialValues, enableReinitialize = true, ...other} = props;
 
-  const handleSubmit = useCallback((values: any, formikHelpers: FormikHelpers<any>) => {
+  const handleSubmit = useCallback((values: FormikValues, formikHelpers: FormikHelpers<T>) => {
       if (onSubmit) {
         const submitResult = onSubmit(values, formikHelpers);
 
-        if (submitResult && (submitResult as any).__proto__.then) {
+        if (submitResult instanceof Promise) {
           submitResult.finally(() => {
             formikHelpers.setSubmitting(false);
           });
@@ -30,7 +26,7 @@ export function FormikForm<T>({
   );
 
   return (
-    <Formik {...other} initialValues={initialValues as any} onSubmit={handleSubmit} enableReinitialize={enableReinitialize}>
+    <Formik {...other} initialValues={initialValues} onSubmit={handleSubmit} enableReinitialize={enableReinitialize}>
       {(formik) => (
         <>
           {

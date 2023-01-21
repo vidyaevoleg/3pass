@@ -13,12 +13,12 @@ const initialValues = {
   url: '',
   username: '',
   password: '',
-  type: ItemType.Login
+  type: ItemType.Login,
 };
 
 const initFormValues = (item: Instance<typeof Item>): Record<string, unknown>=> {
   return Object.keys(initialValues).reduce((values, key) => {
-    values[key] = (item as any)[key];
+    values[key] = item[key as keyof Instance<typeof Item>];
     return values;
   }, {...initialValues} as Record<string, unknown>);
 };
@@ -30,7 +30,7 @@ export const ItemForm: FC<IProps> = ({ item }) => {
     item ? initFormValues(item) : initialValues
   ), [item]);
 
-  const saveHandler = useCallback(async (itemToSave: Partial<Instance<typeof Item>>) => {
+  const saveHandler = useCallback(async (itemToSave: Record<string, unknown>) => {
     if (item) {
       await itemsStore.update(item.id, itemToSave);
     } else {
