@@ -53,14 +53,16 @@ export const FormikTextInput: FC<IFormikTextInputProps> = ({
 
   return (
     <FormControl
-      sx={{ pb: spacing, display: 'block' }}
+      sx={{ pb: theme.spacing(3), display: 'block', pt: theme.spacing(1), }}
     >
       <TextInput
         {...props}
         name={name}
         onChange={handleChange}
         value={textValue}
-        label={label}
+        label={textValue === "" ? label : "" }
+        InputLabelProps={{ shrink: false }}
+        color={"info"}
         onBlur={handleOnBlur}
         tooltip={tooltip}
         helperText={meta.error}

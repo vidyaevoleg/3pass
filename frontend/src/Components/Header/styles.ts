@@ -27,7 +27,9 @@ export const useStyles = (theme: Theme) => (
       pl: '27px', 
       pb: '12px', 
       maxWidth: 584, 
-      borderRadius: theme.spacing(1), //does not work! 8px
+      '& .MuiOutlinedInput-root': {
+        borderRadius: theme.spacing(1), // 8px
+      },
     },
     boxNear: {
       height: theme.spacing(8), // 64px

@@ -35,7 +35,7 @@ export const Header: FC = observer(() => {
                     startAdornment: 
                     <InputAdornment position='start'>
                       <SearchIcon></SearchIcon>
-                    </InputAdornment>,
+                    </InputAdornment>
                   }}
                 />
               </Box>
