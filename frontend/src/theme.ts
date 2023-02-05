@@ -11,15 +11,18 @@ export const colors = {
   gray3: '#ABB3C1', // grid icon
   gray4: '#76839E', // expand more icon
   gray5: '#D7DAE0', // NewItem button border
+  gray6: '#98A2B3', // placeholders text color
+  gray7: '#F3F4FD', // password key background
   black: 'rgba(0, 0, 0, 0.87)',
   black2: '#202327', // NewItem button
+  black3: 'rgba(0, 0, 0, 0.54)', // password key icon
 }
 
 const textPalette = {
   primary: colors.black2,
   secondary: colors.gray4,
   link: colors.blue4,
-  linkHover: colors.blue3
+  linkHover: colors.blue3,
 };
 
 const palette = {
@@ -32,11 +35,12 @@ const palette = {
     light: colors.blue2,
     main: colors.blue3,
     dark: colors.blue4,
-    contrastText: colors.white
+    contrastText: colors.white,
+    gray: colors.gray6,
   },
   info: {
     light: colors.blue1,
-    main: colors.blue2,
+    main: colors.blue6,
     dark: colors.blue4,
     contrastText: colors.white
   }

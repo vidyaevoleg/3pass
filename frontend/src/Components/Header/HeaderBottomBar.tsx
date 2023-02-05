@@ -31,7 +31,14 @@ export const HeaderBottomBar: FC = observer(() => {
           </Grid>
           <Grid item xs={10}>
             <Box> 
-              {/* Buttons will be here */}
+              {/*
+              <Button>
+                Cancel
+              </Button> 
+              <FormikSubmit>
+                Save
+              </FormikSubmit> 
+              */}
             </Box>
           </Grid>
         </Grid>

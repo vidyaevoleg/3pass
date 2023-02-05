@@ -7,7 +7,7 @@ export const useStyles = (theme: Theme) => (
       boxShadow: 'none',
     },
     button: {
-      maxWidth: '209px',
+      maxWidth: '92%',
       mt: theme.spacing(1), // 8px
       mb: theme.spacing(2), // 16px
       fontSize: '1rem',
@@ -21,6 +21,7 @@ export const useStyles = (theme: Theme) => (
     menuItem: {
       pl: theme.spacing(1), // 8px
       py: theme.spacing(1), // 8px
+      maxWidth: '92%',
       display: 'flex',
       alignItems: 'flex-start',
     },
