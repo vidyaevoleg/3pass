@@ -20,7 +20,7 @@ export const useStyles = (theme: Theme) => (
         pt: '3px',
         pl: '2px'
       },
-      "& .MuiFormLabel-root-MuiInputLabel-root.Mui-focused": {
+      "& .css-imu8uf-MuiFormLabel-root-MuiInputLabel-root.Mui-focused": {
         color: 'primary.gray',
       },
       '& .MuiInputBase-input': {
@@ -60,16 +60,17 @@ export const useStyles = (theme: Theme) => (
         borderRadius: theme.spacing(1), // 8px
       }
     },
-    eyeIcon: {
-      color: `${colors.gray3}`
-    },
     keyIconButton: {
       minWidth: '40px', 
       height: '40px', 
       mt: theme.spacing(1), // 8px 
       ml: theme.spacing(2), // 16px 
       background: `${colors.gray7}`, 
-      p: 0
+      p: 0,
+      '&:hover': {
+        background: `${colors.gray7}`,
+        border: `2px solid ${colors.blue6}`
+      },
     },
     keyIcon: {
       color: `${colors.black3}`
@@ -91,7 +92,10 @@ export const useStyles = (theme: Theme) => (
       height: '32px', 
       background: `${colors.blue6}`, 
       textTransform: 'none', 
-      fontSize: '14px'
+      fontSize: '14px',
+      '&:hover': {
+        border: `1px solid ${colors.black2}`,
+      },
     }
   }
 );
