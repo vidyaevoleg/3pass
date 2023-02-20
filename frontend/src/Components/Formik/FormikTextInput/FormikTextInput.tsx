@@ -15,6 +15,7 @@ export const FormikTextInput: FC<IFormikTextInputProps> = ({
   tooltip,
   onChange,
   onBlur,
+  InputProps,
   ...props
 }) => {
   const [field, meta, helpers] = useField(name);
@@ -51,6 +52,8 @@ export const FormikTextInput: FC<IFormikTextInputProps> = ({
 
   const spacing = theme.spacing(2);
 
+  const inputProps = { ...InputProps };
+
   return (
     <FormControl
       sx={{ pb: theme.spacing(3), display: 'block', pt: theme.spacing(1), }}
@@ -62,6 +65,7 @@ export const FormikTextInput: FC<IFormikTextInputProps> = ({
         value={textValue}
         label={textValue === "" ? label : "" }
         InputLabelProps={{ shrink: false }}
+        InputProps={inputProps}
         color={"info"}
         onBlur={handleOnBlur}
         tooltip={tooltip}

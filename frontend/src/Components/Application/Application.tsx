@@ -34,7 +34,7 @@ export const Application: FC = observer(() => {
       <HeaderBottomBar />
       <Grid container spacing={0} sx={ styles.gridContainer }>
         <Grid item xs={2} sx={ styles.gridItemsList }>
-          <Box>
+          <Box sx={ styles.boxMaxHeight }>
             <ItemsList/>
           </Box>
         </Grid>

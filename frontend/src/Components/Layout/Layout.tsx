@@ -10,7 +10,14 @@ interface IProps {
 
 export const Layout: FC<IProps> = observer(({ children}) => {
   return (
-    <Container component='main' maxWidth='xl'>
+    <Container 
+      component='main' 
+      maxWidth='xl'
+      sx={{
+        '@media (min-width: 600px)': {
+          padding: 0
+        }
+      }}>
       <Header/>
       <Box mt={1}>
         { children }

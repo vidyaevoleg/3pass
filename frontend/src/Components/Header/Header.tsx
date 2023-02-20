@@ -9,6 +9,7 @@ import {TextInput} from 'Components/UI/TextInput';
 import Grid from '@mui/material/Grid';
 import SearchIcon from '@mui/icons-material/Search';
 import logo3Pass from './logo3pass.svg';
+import {Link} from 'Components/UI/Link';
 
 export const Header: FC = observer(() => {
   const { userStore } = useStore();
@@ -21,7 +22,9 @@ export const Header: FC = observer(() => {
         <Grid container spacing={0} sx = { styles.gridContainer }>
           <Grid item xs={2}>
             <Box sx={ styles.boxLogo }>
-              <img src={ logo3Pass } alt='logo 3Pass'/>
+              <Link to={'/application'}>
+                <img src={ logo3Pass } alt='logo 3Pass'/>
+              </Link>
             </Box>
           </Grid>
           <Grid item xs={8}>

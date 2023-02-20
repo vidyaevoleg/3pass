@@ -13,6 +13,9 @@ export const useStyles = (theme: Theme) => (
     gridItemsList: {
       borderRight: `1px solid ${colors.gray2}`,
     },
+    boxMaxHeight: {
+      minHeight: 'calc(100vh - 128px - 4px)',
+    },
     paper: {
       boxShadow: 'none',
     },

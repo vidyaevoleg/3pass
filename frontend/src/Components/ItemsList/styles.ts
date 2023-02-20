@@ -24,6 +24,7 @@ export const useStyles = (theme: Theme) => (
       maxWidth: '92%',
       display: 'flex',
       alignItems: 'flex-start',
+      borderRadius: '8px',
     },
     lockIcon: {
       color: `${colors.blue6}`, 

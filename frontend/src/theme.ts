@@ -81,8 +81,8 @@ export const ThemeOptions = {
       xs: 0,
       sm: 600,
       md: 900,
-      lg: 1440, // now this value
-      xl: 1600,
+      lg: 1440,
+      xl: 3840, // now this value - this is max width of body element
     },
   },
 
