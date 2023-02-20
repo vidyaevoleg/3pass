@@ -29,7 +29,11 @@ export const TextInput: FC<ITextInputProps> = ({
   }, [])
 
   const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  // const handleClickShowPassword = () => setShowPassword(!showPassword);
+
+  const handleClickShowPassword = useCallback(() => {
+    setShowPassword(!showPassword);
+  }, [showPassword]);
 
   if (!!tooltip) {
    return <TextField
